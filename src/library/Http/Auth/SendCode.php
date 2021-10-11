@@ -27,13 +27,13 @@ class SendCode extends Common
         if (!$captcha || $captcha != $session->get('ucenter_auth_captcha')) {
             return $this->failure('验证码不正确！');
         }
-        $session->delete('ucenter_auth_captcha');
+        $session->unset('ucenter_auth_captcha');
 
         if ($config->get('auth.allow_login@ebcms.ucenter-web') != 1) {
             return $this->failure('暂时关闭登陆！');
         }
 
-        $code = random_int(100000, 999999);
+        $code = (string)random_int(100000, 999999);
         $phone = $request->post('phone');
 
         try {

@@ -54,18 +54,18 @@ class Login extends Common
         }
 
         if (!$verify_count = $session->get('verify_count')) {
-            $session->delete('verify_count');
-            $session->delete('verify_phone');
-            $session->delete('verify_code');
+            $session->unset('verify_count');
+            $session->unset('verify_phone');
+            $session->unset('verify_code');
             return $this->failure('请重新获取校验码！', '', 0);
         }
         $session->set('verify_count', $verify_count - 1);
 
         if ($code != $session->get('verify_code')) {
             if ($verify_count - 1 <= 0) {
-                $session->delete('verify_count');
-                $session->delete('verify_phone');
-                $session->delete('verify_code');
+                $session->unset('verify_count');
+                $session->unset('verify_phone');
+                $session->unset('verify_code');
                 return $this->failure('短信校验码不正确！', '', 0);
             } else {
                 return $this->failure('短信校验码不正确！剩余' . ($verify_count - 1) . '次校验机会！', '', $verify_count - 1);
@@ -73,9 +73,9 @@ class Login extends Common
         }
 
         if (!$phone = $session->get('verify_phone')) {
-            $session->delete('verify_count');
-            $session->delete('verify_phone');
-            $session->delete('verify_code');
+            $session->unset('verify_count');
+            $session->unset('verify_phone');
+            $session->unset('verify_code');
             return $this->failure('非法操作！', '', 0);
         }
 
@@ -100,20 +100,20 @@ class Login extends Common
         }
 
         if ($user['state'] != 1) {
-            $session->delete('verify_count');
-            $session->delete('verify_phone');
-            $session->delete('verify_code');
+            $session->unset('verify_count');
+            $session->unset('verify_phone');
+            $session->unset('verify_code');
             return $this->failure('该账户无法登陆！', '', 0);
         }
 
-        $session->delete('verify_count');
-        $session->delete('verify_phone');
-        $session->delete('verify_code');
+        $session->unset('verify_count');
+        $session->unset('verify_phone');
+        $session->unset('verify_code');
 
         $userModel->login($user['id']);
 
         if ($url = $session->get('login_redirect_uri')) {
-            $session->delete('login_redirect_uri');
+            $session->unset('login_redirect_uri');
         } else {
             $url = $router->buildUrl('/ebcms/ucenter-web/console/index');
         }
